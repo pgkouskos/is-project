@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - C:\Users\panag\projects\is-project\volumes\mongo-data:/data/db
+    networks:
+      - presto-net
+
+  cassandra:
+    image: cassandra:latest
+    container_name: cassandra
+    ports:
+      - "9042:9042"
+    volumes:
+      - C:\Users\panag\projects\is-project\volumes\cassandra-data:/var/lib/cassandra
+    networks:
+      - presto-net
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: testdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - C:\Users\panag\projects\is-project\volumes\postgres-data:/var/lib/postgresql/data
+    networks:
+      - presto-net
+
+  prestodb:
+    image: prestodb/presto:latest
+    container_name: prestodb
+    ports:
+      - "8080:8080"
+    volumes:
+      - C:\Users\panag\projects\is-project\config\presto-config\catalog:/opt/presto-server/etc/catalog
+    depends_on:
+      - mongodb
+      - cassandra
+      - postgres
+    networks:
+      - presto-net
+
+volumes:
+  mongo-data:
+  cassandra-data:
+  postgres-data:
+
+networks:
+  presto-net:
