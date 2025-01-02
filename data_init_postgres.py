@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 DATA_DIR = os.getenv("TEST_DATA_LOCAL_PATH")
+TMP_DATA_DIR = os.getenv("TEST_DATA_TMP_LOCAL_PATH")
 HEADERS_DIR = os.getenv("TEST_DATA_HEADER_LOCAL_PATH")
 
 DB_CONFIG = {
@@ -15,9 +16,9 @@ DB_CONFIG = {
     "port": 5432
 }
 
-def preprocess_data(file_path):
+def preprocess_data(table_name, file_path):
     # Define the path for the temporary cleaned file
-    temp_file_path = f"{file_path}.tmp"
+    temp_file_path = os.path.join(TMP_DATA_DIR, f"{table_name}_postgres.dat")
     with open(file_path, 'r') as infile, open(temp_file_path, 'w') as outfile:
         for line in infile:
             # Strip the line to remove any trailing whitespace, then remove trailing '|'
@@ -34,7 +35,7 @@ def preprocess_data(file_path):
     return temp_file_path
 
 def load_data_to_table(cursor, table_name, file_path):
-    temp_file_path = preprocess_data(file_path)
+    temp_file_path = preprocess_data(table_name, file_path)
     try:
         print(f"Loading data into {table_name} from {temp_file_path}")
         with open(temp_file_path, "r") as file:
