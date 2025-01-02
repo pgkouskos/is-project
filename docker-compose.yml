@@ -16,7 +16,7 @@ services:
       - "9042:9042"
     volumes:
       - ${CASSANDRA_DATA_LOCAL_PATH}:/var/lib/cassandra
-      - ${TEST_DATA_LOCAL_PATH}:/tmp/data
+      - ${TEST_DATA_TMP_LOCAL_PATH}:/tmp/data
     networks:
       - presto-net
 
