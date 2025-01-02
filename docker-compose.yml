@@ -1,13 +1,11 @@
-version: '3.8'
-
 services:
-  mongodb:
+  mongo:
     image: mongo:latest
     container_name: mongodb
     ports:
       - "27017:27017"
     volumes:
-      - C:\Users\panag\projects\is-project\volumes\mongo-data:/data/db
+      - ${MONGO_DATA_LOCAL_PATH}:/data/db
     networks:
       - presto-net
 
@@ -17,7 +15,8 @@ services:
     ports:
       - "9042:9042"
     volumes:
-      - C:\Users\panag\projects\is-project\volumes\cassandra-data:/var/lib/cassandra
+      - ${CASSANDRA_DATA_LOCAL_PATH}:/var/lib/cassandra
+      - ${TEST_DATA_LOCAL_PATH}:/tmp/data
     networks:
       - presto-net
 
@@ -25,13 +24,13 @@ services:
     image: postgres:latest
     container_name: postgres
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: testdb
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
-      - C:\Users\panag\projects\is-project\volumes\postgres-data:/var/lib/postgresql/data
+      - ${POSTGRES_DATA_LOCAL_PATH}:/var/lib/postgresql/data
     networks:
       - presto-net
 
@@ -41,9 +40,9 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - C:\Users\panag\projects\is-project\config\presto-config\catalog:/opt/presto-server/etc/catalog
+      - ${PRESTO_CATALOG_LOCAL_PATH}:/opt/presto-server/etc/catalog
     depends_on:
-      - mongodb
+      - mongo
       - cassandra
       - postgres
     networks:
