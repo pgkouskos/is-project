@@ -4,11 +4,11 @@ WITH wscs
                 sales_price 
          FROM   (SELECT ws_sold_date_sk    sold_date_sk, 
                         ws_ext_sales_price sales_price 
-                 FROM   web_sales) 
+                 FROM   cassandra.is_keyspace.web_sales)
          UNION ALL 
          (SELECT cs_sold_date_sk    sold_date_sk, 
                  cs_ext_sales_price sales_price 
-          FROM   catalog_sales)), 
+          FROM   cassandra.is_keyspace.catalog_sales)),
      wswscs 
      AS (SELECT d_week_seq, 
                 Sum(CASE 
@@ -40,7 +40,7 @@ WITH wscs
                       ELSE NULL 
                     END) sat_sales 
          FROM   wscs, 
-                date_dim 
+                postgres.public.date_dim
          WHERE  d_date_sk = sold_date_sk 
          GROUP  BY d_week_seq) 
 SELECT d_week_seq1, 
@@ -60,7 +60,7 @@ FROM   (SELECT wswscs.d_week_seq d_week_seq1,
                fri_sales         fri_sales1, 
                sat_sales         sat_sales1 
         FROM   wswscs, 
-               date_dim 
+               postgres.public.date_dim
         WHERE  date_dim.d_week_seq = wswscs.d_week_seq 
                AND d_year = 1998) y, 
        (SELECT wswscs.d_week_seq d_week_seq2, 
@@ -72,8 +72,8 @@ FROM   (SELECT wswscs.d_week_seq d_week_seq1,
                fri_sales         fri_sales2, 
                sat_sales         sat_sales2 
         FROM   wswscs, 
-               date_dim 
+               postgres.public.date_dim
         WHERE  date_dim.d_week_seq = wswscs.d_week_seq 
                AND d_year = 1998 + 1) z 
 WHERE  d_week_seq1 = d_week_seq2 - 53 
-ORDER  BY d_week_seq1;
+ORDER  BY d_week_seq1

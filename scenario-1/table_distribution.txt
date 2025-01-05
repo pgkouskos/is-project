@@ -1,0 +1,28 @@
+Postgres (Best for normalized dimension tables and smaller fact tables with complex joins)
+call_center
+catalog_page
+customer
+customer_demographics
+date_dim
+household_demographics
+income_band
+item
+promotion
+reason
+ship_mode
+store
+time_dim
+warehouse
+web_page
+web_site
+
+Mongo (Best for semi-structured or hierarchical data and tables frequently accessed independently)
+customer_address
+web_returns
+store_returns
+
+Cassandra (Best for large-scale, write-heavy fact tables and distributed querying)
+catalog_sales
+store_sales
+web_sales
+inventory
