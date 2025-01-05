@@ -3,7 +3,7 @@ WITH customer_total_return
      AS (SELECT sr_customer_sk     AS ctr_customer_sk, 
                 sr_store_sk        AS ctr_store_sk, 
                 Sum(cast(sr_return_amt as decimal)) AS ctr_total_return
-         FROM   mongo."is-db".store_returns,
+         FROM   mongo.is_db.store_returns,
                 postgres.public.date_dim
          WHERE  CAST(sr_returned_date_sk AS INTEGER) = d_date_sk
                 AND d_year = 2001

@@ -17,6 +17,7 @@ web_page
 web_site
 
 Mongo (Best for semi-structured or hierarchical data and tables frequently accessed independently)
+catalog_returns
 customer_address
 web_returns
 store_returns
