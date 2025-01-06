@@ -1,20 +1,24 @@
 import os
+import json
 from dotenv import load_dotenv
 
 load_dotenv()
 
 DATA_DIR = os.getenv("TEST_DATA_LOCAL_PATH")
-HEADERS_DIR = os.getenv("TEST_DATA_HEADER_LOCAL_PATH")
+SCHEMA_DIR = os.getenv("TEST_DATA_SCHEMA_LOCAL_PATH")
 TMP_DATA_DIR = os.getenv("TEST_DATA_TMP_LOCAL_PATH")
 
-def get_columns_from_header(table_name):
-    """Read column headers from the header file for a given table, splitting by '|'."""
-    header_file = os.path.join(HEADERS_DIR, f"{table_name}_header.dat")
-    if not os.path.exists(header_file):
-        raise FileNotFoundError(f"Header file not found for table: {table_name}")
-    with open(header_file, "r") as file:
-        # Read columns from the header, split by '|' and strip any extra spaces
-        columns = [col.strip() for line in file for col in line.strip().split('|') if col.strip()]
+def get_columns_from_schema(table_name):
+    """Read column names from the schema JSON file for a given table."""
+    schema_file = os.path.join(SCHEMA_DIR, f"{table_name}.json")
+    if not os.path.exists(schema_file):
+        raise FileNotFoundError(f"Schema file not found for table: {table_name}")
+    
+    with open(schema_file, "r") as file:
+        table_schema = json.load(file)
+    
+    # Extract column names from the schema
+    columns = list(table_schema.keys())
     return columns
 
 def preprocess_data(file_path, columns):
@@ -53,7 +57,7 @@ def main():
             table_name = os.path.splitext(file_name)[0].lower()
             file_path = os.path.join(DATA_DIR, file_name)
             try:
-                table_columns = get_columns_from_header(table_name)
+                table_columns = get_columns_from_schema(table_name)
                 data = preprocess_data(file_path, table_columns)
                 write_preprocessed_data(data, table_name, table_columns)
                 print(f"Data for table {table_name} preprocessed and written successfully.")
