@@ -6,7 +6,6 @@ load_dotenv()
 
 DATA_DIR = os.getenv("TEST_DATA_LOCAL_PATH")
 TMP_DATA_DIR = os.getenv("TEST_DATA_TMP_LOCAL_PATH")
-HEADERS_DIR = os.getenv("TEST_DATA_HEADER_LOCAL_PATH")
 
 DB_CONFIG = {
     "dbname": os.getenv("POSTGRES_DB"),
