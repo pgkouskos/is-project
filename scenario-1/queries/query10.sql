@@ -16,7 +16,7 @@ SELECT cd_gender,
 FROM   postgres.public.customer c,
        mongo.is_db.customer_address ca,
        postgres.public.customer_demographics
-WHERE  c.c_current_addr_sk = cast(ca.ca_address_sk as integer)
+WHERE  c.c_current_addr_sk = ca.ca_address_sk
        AND ca_county IN ( 'Lycoming County', 'Sheridan County', 
                           'Kandiyohi County', 
                           'Pike County', 

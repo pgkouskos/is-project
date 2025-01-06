@@ -213,7 +213,7 @@ FROM   cassandra.is_keyspace.store_sales,
                                Count(*)             cnt 
                         FROM   mongo.is_db.customer_address,
                                postgres.public.customer
-                        WHERE  cast(ca_address_sk as integer) = c_current_addr_sk
+                        WHERE  ca_address_sk = c_current_addr_sk
                                AND c_preferred_cust_flag = 'Y' 
                         GROUP  BY ca_zip 
                         HAVING Count(*) > 10)A1)A2) V1 

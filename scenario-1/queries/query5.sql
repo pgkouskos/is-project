@@ -14,13 +14,13 @@ WITH ssr AS
                                 Cast(0 AS DECIMAL(7,2)) AS return_amt, 
                                 Cast(0 AS DECIMAL(7,2)) AS net_loss 
                          FROM   cassandra.is_keyspace.store_sales
-                         UNION ALL 
-                         SELECT cast(sr_store_sk as integer)             AS store_sk,
-                                cast(sr_returned_date_sk as integer)     AS date_sk,
+                         UNION ALL
+                         SELECT sr_store_sk             AS store_sk,
+                                sr_returned_date_sk     AS date_sk,
                                 Cast(0 AS DECIMAL(7,2)) AS sales_price,
                                 Cast(0 AS DECIMAL(7,2)) AS profit,
-                                cast(sr_return_amt as decimal(7,2))           AS return_amt,
-                                cast(sr_net_loss as decimal(7,2))             AS net_loss
+                                sr_return_amt           AS return_amt,
+                                sr_net_loss             AS net_loss
                          FROM   mongo.is_db.store_returns ) salesreturns,
                   postgres.public.date_dim,
                   postgres.public.store
@@ -44,12 +44,12 @@ WITH ssr AS
                                 cast(0 AS decimal(7,2)) AS net_loss
                          FROM   cassandra.is_keyspace.catalog_sales
                          UNION ALL
-                         SELECT cast(cr_catalog_page_sk as integer)      AS page_sk,
-                                cast(cr_returned_date_sk as integer) AS date_sk,
+                         SELECT cr_catalog_page_sk      AS page_sk,
+                                cr_returned_date_sk     AS date_sk,
                                 cast(0 AS decimal(7,2)) AS sales_price,
                                 cast(0 AS decimal(7,2)) AS profit,
-                                cast(cr_return_amount as decimal(7,2)) AS return_amt,
-                                cast(cr_net_loss as decimal(7,2)) AS net_loss
+                                cr_return_amount        AS return_amt,
+                                cr_net_loss             AS net_loss
                          FROM   mongo.is_db.catalog_returns ) salesreturns,
                   postgres.public.date_dim,
                   postgres.public.catalog_page
@@ -74,54 +74,54 @@ WITH ssr AS
                          FROM   cassandra.is_keyspace.web_sales
                          UNION ALL
                          SELECT          ws_web_site_sk          AS wsr_web_site_sk,
-                                         cast(wr_returned_date_sk as integer)     AS date_sk,
+                                         wr_returned_date_sk     AS date_sk,
                                          cast(0 AS decimal(7,2)) AS sales_price,
                                          cast(0 AS decimal(7,2)) AS profit,
-                                         cast(wr_return_amt as decimal(7,2))           AS return_amt,
-                                         cast(wr_net_loss as decimal(7,2))             AS net_loss
+                                         wr_return_amt           AS return_amt,
+                                         wr_net_loss             AS net_loss
                          FROM            mongo.is_db.web_returns
                          LEFT OUTER JOIN cassandra.is_keyspace.web_sales
                          ON              (
-                                                         cast(wr_item_sk as integer) = ws_item_sk
-                                         AND             cast(wr_order_number as integer) = ws_order_number) ) salesreturns,
+                                                         wr_item_sk = ws_item_sk
+                                         AND             wr_order_number = ws_order_number) ) salesreturns,
                   postgres.public.date_dim,
                   postgres.public.web_site
-         WHERE    date_sk = d_date_sk 
-         AND      d_date BETWEEN cast('2002-08-22' AS date) AND      ( 
-                           cast('2002-08-22' AS date) + INTERVAL '14' day) 
-         AND      wsr_web_site_sk = web_site_sk 
-         GROUP BY web_site_id) 
-SELECT 
-         channel , 
-         id , 
-         sum(sales)   AS sales , 
-         sum(returns1) AS returns1 , 
-         sum(profit)  AS profit 
-FROM     ( 
-                SELECT 'store channel' AS channel , 
-                       'store' 
-                              || s_store_id AS id , 
-                       sales , 
-                       returns1 , 
-                       (profit - profit_loss) AS profit 
-                FROM   ssr 
-                UNION ALL 
-                SELECT 'catalog channel' AS channel , 
-                       'catalog_page' 
-                              || cp_catalog_page_id AS id , 
-                       sales , 
-                       returns1 , 
-                       (profit - profit_loss) AS profit 
-                FROM   csr 
-                UNION ALL 
-                SELECT 'web channel' AS channel , 
-                       'web_site' 
-                              || web_site_id AS id , 
-                       sales , 
-                       returns1 , 
-                       (profit - profit_loss) AS profit 
-                FROM   wsr ) x 
-GROUP BY rollup (channel, id) 
-ORDER BY channel , 
-         id 
+         WHERE    date_sk = d_date_sk
+         AND      d_date BETWEEN cast('2002-08-22' AS date) AND      (
+                           cast('2002-08-22' AS date) + INTERVAL '14' day)
+         AND      wsr_web_site_sk = web_site_sk
+         GROUP BY web_site_id)
+SELECT
+         channel ,
+         id ,
+         sum(sales)   AS sales ,
+         sum(returns1) AS returns1 ,
+         sum(profit)  AS profit
+FROM     (
+                SELECT 'store channel' AS channel ,
+                       'store'
+                              || s_store_id AS id ,
+                       sales ,
+                       returns1 ,
+                       (profit - profit_loss) AS profit
+                FROM   ssr
+                UNION ALL
+                SELECT 'catalog channel' AS channel ,
+                       'catalog_page'
+                              || cp_catalog_page_id AS id ,
+                       sales ,
+                       returns1 ,
+                       (profit - profit_loss) AS profit
+                FROM   csr
+                UNION ALL
+                SELECT 'web channel' AS channel ,
+                       'web_site'
+                              || web_site_id AS id ,
+                       sales ,
+                       returns1 ,
+                       (profit - profit_loss) AS profit
+                FROM   wsr ) x
+GROUP BY rollup (channel, id)
+ORDER BY channel ,
+         id
 LIMIT 100
