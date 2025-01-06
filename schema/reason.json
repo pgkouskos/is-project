@@ -1,0 +1,5 @@
+{
+    "r_reason_sk": "int",
+    "r_reason_id": "str",
+    "r_reason_desc": "str"
+}

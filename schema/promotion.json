@@ -1,0 +1,21 @@
+{
+    "p_promo_sk": "int",
+    "p_promo_id": "str",
+    "p_start_date_sk": "int",
+    "p_end_date_sk": "int",
+    "p_item_sk": "int",
+    "p_cost": "float",
+    "p_response_target": "int",
+    "p_promo_name": "str",
+    "p_channel_dmail": "str",
+    "p_channel_email": "str",
+    "p_channel_catalog": "str",
+    "p_channel_tv": "str",
+    "p_channel_radio": "str",
+    "p_channel_press": "str",
+    "p_channel_event": "str",
+    "p_channel_demo": "str",
+    "p_channel_details": "str",
+    "p_purpose": "str",
+    "p_discount_active": "str"
+}

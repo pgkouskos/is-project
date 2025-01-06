@@ -1,0 +1,15 @@
+{
+  "ca_address_sk": "int",
+  "ca_address_id": "str",
+  "ca_street_number": "str",
+  "ca_street_name": "str",
+  "ca_street_type": "str",
+  "ca_suite_number": "str",
+  "ca_city": "str",
+  "ca_county": "str",
+  "ca_state": "str",
+  "ca_zip": "str",
+  "ca_country": "str",
+  "ca_gmt_offset": "float",
+  "ca_location_type": "str"
+}

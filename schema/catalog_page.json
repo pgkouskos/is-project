@@ -1,0 +1,11 @@
+{
+    "cp_catalog_page_sk": "int",
+    "cp_catalog_page_id": "str",
+    "cp_start_date_sk": "int",
+    "cp_end_date_sk": "int",
+    "cp_department": "str",
+    "cp_catalog_number": "int",
+    "cp_catalog_page_number": "int",
+    "cp_description": "str",
+    "cp_type": "str"
+}

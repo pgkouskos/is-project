@@ -1,0 +1,8 @@
+{
+    "sm_ship_mode_sk": "int",
+    "sm_ship_mode_id": "str",
+    "sm_type": "str",
+    "sm_code": "str",
+    "sm_carrier": "str",
+    "sm_contract": "str"
+}

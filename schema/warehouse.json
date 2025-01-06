@@ -1,0 +1,16 @@
+{
+    "w_warehouse_sk": "int",
+    "w_warehouse_id": "str",
+    "w_warehouse_name": "str",
+    "w_warehouse_sq_ft": "int",
+    "w_street_number": "str",
+    "w_street_name": "str",
+    "w_street_type": "str",
+    "w_suite_number": "str",
+    "w_city": "str",
+    "w_county": "str",
+    "w_state": "str",
+    "w_zip": "str",
+    "w_country": "str",
+    "w_gmt_offset": "float"
+}

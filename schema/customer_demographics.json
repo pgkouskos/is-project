@@ -1,0 +1,11 @@
+{
+    "cd_demo_sk": "int",
+    "cd_gender": "str",
+    "cd_marital_status": "str",
+    "cd_education_status": "str",
+    "cd_purchase_estimate": "int",
+    "cd_credit_rating": "str",
+    "cd_dep_count": "int",
+    "cd_dep_employed_count": "int",
+    "cd_dep_college_count": "int"
+}

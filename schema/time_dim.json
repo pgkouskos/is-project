@@ -1,0 +1,12 @@
+{
+    "t_time_sk": "int",
+    "t_time_id": "str",
+    "t_time": "int",
+    "t_hour": "int",
+    "t_minute": "int",
+    "t_second": "int",
+    "t_am_pm": "str",
+    "t_shift": "str",
+    "t_sub_shift": "str",
+    "t_meal_time": "str"
+}
