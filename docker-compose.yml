@@ -41,6 +41,8 @@ services:
       - "8080:8080"
     volumes:
       - ${PRESTO_CATALOG_LOCAL_PATH}:/opt/presto-server/etc/catalog
+      - ${PRESTO_CONFIG_LOCAL_PATH}:/opt/presto-server/etc/config.properties
+      - ${PRESTO_JVM_CONFIG_LOCAL_PATH}:/opt/presto-server/etc/jvm.config
     depends_on:
       - mongo
       - cassandra
