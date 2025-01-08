@@ -6,6 +6,7 @@ load_dotenv()
 
 DATA_DIR = os.getenv("TEST_DATA_LOCAL_PATH")
 TMP_DATA_DIR = os.getenv("TEST_DATA_TMP_LOCAL_PATH")
+POSTGRES_DDL_FILE = os.path.join(os.path.dirname(__file__), "..", "migration", "postgres-ddl.sql")
 
 DB_CONFIG = {
     "dbname": os.getenv("POSTGRES_DB"),
@@ -14,6 +15,15 @@ DB_CONFIG = {
     "host": "localhost",
     "port": 5432
 }
+
+def create_schema(cursor):
+    try:
+        with open(POSTGRES_DDL_FILE, 'r') as file:
+            sql_commands = file.read()
+        cursor.execute(sql_commands)
+        print("Schema created successfully.")
+    except Exception as e:
+        print(f"An error occurred while creating schema: {e}")
 
 def preprocess_data(table_name, file_path):
     # Define the path for the temporary cleaned file
@@ -52,6 +62,7 @@ def main():
     conn.autocommit = True
     try:
         with conn.cursor() as cursor:
+            create_schema(cursor)
             for file_name in os.listdir(DATA_DIR):
                 if file_name.endswith(".dat"):
                     table_name = os.path.splitext(file_name)[0].lower()
