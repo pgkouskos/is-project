@@ -34,15 +34,16 @@ services:
     networks:
       - presto-net
 
-  prestodb:
+  prestodb-coordinator:
     image: prestodb/presto:latest
-    container_name: prestodb
+    container_name: prestodb-coordinator
     ports:
       - "8080:8080"
     volumes:
       - ${PRESTO_CATALOG_LOCAL_PATH}:/opt/presto-server/etc/catalog
-      - ${PRESTO_CONFIG_LOCAL_PATH}:/opt/presto-server/etc/config.properties
-      - ${PRESTO_JVM_CONFIG_LOCAL_PATH}:/opt/presto-server/etc/jvm.config
+    environment:
+      - COORDINATOR=true
+      - NODE_ID=coordinator
     depends_on:
       - mongo
       - cassandra
@@ -50,10 +51,26 @@ services:
     networks:
       - presto-net
 
+  prestodb-worker:
+    image: prestodb/presto:latest
+    environment:
+      - COORDINATOR=false
+      - NODE_ID=worker
+    volumes:
+      - ${PRESTO_CATALOG_LOCAL_PATH}:/opt/presto-server/etc/catalog
+    depends_on:
+      - prestodb-coordinator
+      - mongo
+      - cassandra
+      - postgres
+    networks:
+      - presto-net
+
+networks:
+  presto-net:
+    driver: bridge
+
 volumes:
   mongo-data:
   cassandra-data:
   postgres-data:
-
-networks:
-  presto-net:
