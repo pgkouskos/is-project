@@ -11,7 +11,7 @@ load_dotenv()
 PRESTO_HOST = os.getenv("PRESTO_HOST")
 PRESTO_PORT = os.getenv("PRESTO_PORT")
 PRESTO_USER = os.getenv("PRESTO_USER")
-RESULTS_SCENARIO_1_LOCAL_PATH = os.path.join(os.getenv("RESULTS_LOCAL_PATH"), 'scenario-1')
+RESULTS_SCENARIO_2_LOCAL_PATH = os.path.join(os.getenv("RESULTS_LOCAL_PATH"), 'scenario-2')
 QUERIES_LOCAL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'queries')
 
 def execute_presto_query(file_path, output_file):
@@ -82,9 +82,9 @@ def generate_chart():
     """Reads JSON result files and saves query execution latency as a bar chart."""
     query_times = {}
 
-    for file in os.listdir(RESULTS_SCENARIO_1_LOCAL_PATH):
+    for file in os.listdir(RESULTS_SCENARIO_2_LOCAL_PATH):
         if file.endswith(".json"):
-            file_path = os.path.join(RESULTS_SCENARIO_1_LOCAL_PATH, file)
+            file_path = os.path.join(RESULTS_SCENARIO_2_LOCAL_PATH, file)
             with open(file_path, 'r') as f:
                 data = json.load(f)
                 execution_time = data.get("executionTime")
@@ -105,10 +105,10 @@ def generate_chart():
         plt.grid(axis='y', linestyle='--', alpha=0.7)
 
         # Ensure the output directory exists
-        os.makedirs(RESULTS_SCENARIO_1_LOCAL_PATH, exist_ok=True)
+        os.makedirs(RESULTS_SCENARIO_2_LOCAL_PATH, exist_ok=True)
 
         # Save the figure
-        chart_path = os.path.join(RESULTS_SCENARIO_1_LOCAL_PATH, "query_latency_chart.png")
+        chart_path = os.path.join(RESULTS_SCENARIO_2_LOCAL_PATH, "query_latency_chart.png")
         plt.savefig(chart_path, bbox_inches='tight')
         print(f"Query latency chart saved to {chart_path}")
         
@@ -122,7 +122,7 @@ if __name__ == "__main__":
     for sql_file in sql_files:
         print(f"Executing {sql_file}")
         sql_file_path = os.path.join(QUERIES_LOCAL_PATH, sql_file)
-        output_file_path = os.path.join(RESULTS_SCENARIO_1_LOCAL_PATH, os.path.splitext(sql_file)[0] + '.json')
+        output_file_path = os.path.join(RESULTS_SCENARIO_2_LOCAL_PATH, os.path.splitext(sql_file)[0] + '.json')
         execute_presto_query(sql_file_path, output_file_path)
 
     generate_chart()
