@@ -1,6 +1,7 @@
 import os
 import json
 import psycopg
+import matplotlib.pyplot as plt
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -54,7 +55,7 @@ def execute_postgres_query(file_path, output_file):
             # Convert ms to seconds (if it is in milliseconds)
             if "ms" in optimizer_execution_time_str:
                 execution_time_from_plan = float(execution_time_from_plan) / 1000  # Convert ms to seconds
-                execution_time_from_plan = f"{execution_time_from_plan:.6f} s"  # Format as string
+                execution_time_from_plan = f"{execution_time_from_plan:.6f}"  # Format as string
 
         # Prepare the result in a dictionary
         result = {
@@ -74,6 +75,44 @@ def execute_postgres_query(file_path, output_file):
     except Exception as e:
         print(f"Error: {e}")
 
+def generate_chart():
+    """Reads JSON result files and saves query execution latency as a bar chart."""
+    query_times = {}
+
+    for file in os.listdir(RESULTS_SCENARIO_0_LOCAL_PATH):
+        if file.endswith(".json"):
+            file_path = os.path.join(RESULTS_SCENARIO_0_LOCAL_PATH, file)
+            with open(file_path, 'r') as f:
+                data = json.load(f)
+                execution_time = data.get("executionTime")
+                if execution_time is not None:
+                    try:
+                        execution_time = float(execution_time)
+                        query_times[file.replace(".json", "")] = execution_time
+                    except ValueError:
+                        print(f"Skipping {file} due to invalid execution time format: {execution_time}")
+
+    if query_times:
+        plt.figure(figsize=(10, 5))
+        plt.bar(query_times.keys(), query_times.values(), color='salmon')
+        plt.xlabel("SQL File Name")
+        plt.ylabel("Query Latency (seconds)")
+        plt.title("Presto Query Execution Times")
+        plt.xticks(rotation=45, ha="right")
+        plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+        # Ensure the output directory exists
+        os.makedirs(RESULTS_SCENARIO_0_LOCAL_PATH, exist_ok=True)
+
+        # Save the figure
+        chart_path = os.path.join(RESULTS_SCENARIO_0_LOCAL_PATH, "query_latency_chart.png")
+        plt.savefig(chart_path, bbox_inches='tight')
+        print(f"Query latency chart saved to {chart_path}")
+        
+        plt.close()
+    else:
+        print("No valid execution times found to plot.")
+
 if __name__ == "__main__":
     # Get all .sql files in the 'queries' directory
     sql_files = [f for f in os.listdir(QUERIES_LOCAL_PATH) if f.endswith('.sql')]
@@ -88,3 +127,4 @@ if __name__ == "__main__":
 
         # Execute the PostgreSQL query and save the result as a JSON file
         execute_postgres_query(sql_file_path, output_file_path)
+    generate_chart()
